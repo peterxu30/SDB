@@ -57,6 +57,7 @@ func (src *CaisoEnergySource) Read() (EnergyProductionData, error) {
 
 	stringBody := string(body)
 
+	// a little rough around the edges
 	rest := strings.Split(stringBody, "<span class=\"to_readings\" id=\"currentsolar\">")[1]
 	currentSolar := strings.Split(rest, "</span><br />")[0]
 	currentWind := strings.Split(strings.Split(rest, "</span><br />")[1], 

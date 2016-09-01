@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+//needs lots of work
 func main() {
 	bw := bw2.ConnectOrExit("")
 
