@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"net/http"
+	// "io/ioutil"
+	"github.com/PuerkitoBio/goquery"
+	// "net/http"
 	"strconv"
 	"strings"	
 	"time"
@@ -16,9 +17,9 @@ type CaisoEnergySource struct {
 }
 
 type EnergyProductionData struct {
-	solarProd int
-	windProd int
-	date time.Time
+	SolarProd int
+	WindProd int
+	Date time.Time
 }
 
 func NewCaisoEnergySource(rate int) *CaisoEnergySource {
@@ -44,35 +45,29 @@ func (src *CaisoEnergySource) Start() chan EnergyProductionData {
 }
 
 func (src *CaisoEnergySource) Read() (EnergyProductionData, error) {
-	resp, error := http.Get(src.URL)
-	defer resp.Body.Close()
-	if error != nil {
-		return EnergyProductionData{}, error
+	doc, err := goquery.NewDocument(src.URL)
+	if err != nil {
+		return EnergyProductionData{}, err
 	}
 
-	body, error := ioutil.ReadAll(resp.Body)
-	if error != nil {
-		return EnergyProductionData{}, error
-	}
+	var currentSolar string
+	var currentWind string
 
-	stringBody := string(body)
-
-	// a little rough around the edges
-	rest := strings.Split(stringBody, "<span class=\"to_readings\" id=\"currentsolar\">")[1]
-	currentSolar := strings.Split(rest, "</span><br />")[0]
-	currentWind := strings.Split(strings.Split(rest, "</span><br />")[1], 
-		"<span class=\"to_callout1\">Current Wind:</span> <span class=\"to_readings\" id=\"currentwind\">")[1]
+	doc.Find("tr").Each(func(i int, s *goquery.Selection) {
+	    currentSolar = s.Find("#currentsolar").Text()
+	    currentWind = s.Find("#currentwind").Text()
+  	})
 	
-	currentSolarInt, error := strconv.Atoi(strings.Split(currentSolar, " MW")[0])
-	if error != nil {
-		fmt.Println(error)
+	currentSolarInt, err := strconv.Atoi(strings.Split(currentSolar, " MW")[0])
+	if err != nil {
+		fmt.Println(err)
 	}
 
-	currentWindInt, error := strconv.Atoi(strings.Split(currentWind, " MW")[0])
-	if error != nil {
-		fmt.Println(error)
+	currentWindInt, err := strconv.Atoi(strings.Split(currentWind, " MW")[0])
+	if err != nil {
+		fmt.Println(err)
 	}
-	return EnergyProductionData{ solarProd : currentSolarInt, windProd : currentWindInt, date : time.Now() }, error
+	return EnergyProductionData{ SolarProd : currentSolarInt, WindProd : currentWindInt, Date : time.Now() }, err
 }
 
 func main() {
