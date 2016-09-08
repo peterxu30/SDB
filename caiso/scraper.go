@@ -2,9 +2,7 @@ package main
 
 import (
 	"fmt"
-	// "io/ioutil"
 	"github.com/PuerkitoBio/goquery"
-	// "net/http"
 	"strconv"
 	"strings"	
 	"time"
@@ -17,15 +15,19 @@ type CaisoEnergySource struct {
 }
 
 type EnergyProductionData struct {
-	SolarProd int
-	WindProd int
-	Date time.Time
+	SolarProd float64
+	WindProd float64
 }
 
-func NewCaisoEnergySource(rate int) *CaisoEnergySource {
+func NewCaisoEnergySource(rate string) *CaisoEnergySource {
+	dur, err := time.ParseDuration(rate)
+	if err != nil {
+		panic(err)
+	}
+
 	return &CaisoEnergySource {
 		URL: "http://content.caiso.com/outlook/SP/renewables.html",
-		rate: time.Duration(rate),
+		rate: dur,
 		data: make(chan EnergyProductionData),
 	}
 }
@@ -58,22 +60,22 @@ func (src *CaisoEnergySource) Read() (EnergyProductionData, error) {
 	    currentWind = s.Find("#currentwind").Text()
   	})
 	
-	currentSolarInt, err := strconv.Atoi(strings.Split(currentSolar, " MW")[0])
+	currentSolarInt, err := strconv.ParseFloat(strings.Split(currentSolar, " MW")[0])
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	currentWindInt, err := strconv.Atoi(strings.Split(currentWind, " MW")[0])
+	currentWindInt, err := strconv.ParseFloat(strings.Split(currentWind, " MW")[0])
 	if err != nil {
 		fmt.Println(err)
 	}
-	return EnergyProductionData{ SolarProd : currentSolarInt, WindProd : currentWindInt, Date : time.Now() }, err
+	return EnergyProductionData{ SolarProd : currentSolarInt, WindProd : currentWindInt }, err
 }
 
-func main() {
-	source := NewCaisoEnergySource(10000000000)
-	data := source.Start()
-	for point := range data {
-		fmt.Println(point)
-	}
-}
+// func main() {
+// 	source := NewCaisoEnergySource(10000000000)
+// 	data := source.Start()
+// 	for point := range data {
+// 		fmt.Println(point)
+// 	}
+// }
