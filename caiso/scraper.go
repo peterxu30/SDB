@@ -60,12 +60,12 @@ func (src *CaisoEnergySource) Read() (EnergyProductionData, error) {
 	    currentWind = s.Find("#currentwind").Text()
   	})
 	
-	currentSolarInt, err := strconv.ParseFloat(strings.Split(currentSolar, " MW")[0])
+	currentSolarInt, err := strconv.ParseFloat(strings.Split(currentSolar, " MW")[0], 64)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	currentWindInt, err := strconv.ParseFloat(strings.Split(currentWind, " MW")[0])
+	currentWindInt, err := strconv.ParseFloat(strings.Split(currentWind, " MW")[0], 64)
 	if err != nil {
 		fmt.Println(err)
 	}
