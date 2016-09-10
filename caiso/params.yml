@@ -1,5 +1,4 @@
-svc_base_uri: peterxu30/drivers/weather
-API_KEY:  <api key here>
+svc_base_uri: peterxu30/caiso/weather
 read_rate: 5m
 metadata:
     s.Caiso:

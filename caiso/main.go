@@ -37,11 +37,12 @@ func main() {
 	bw.OverrideAutoChainTo(true)
 	bw.SetEntityFromEnvironOrExit()
 	svc := bw.RegisterService(baseuri, "s.caiso")
-	iface := svc.RegisterInterface("", "i.production")
+	iface := svc.RegisterInterface("_", "i.production")
 
 	params.MergeMetadata(bw)
 
 	fmt.Println(iface.FullURI())
+	fmt.Println(iface.SignalURI("solar"))
 
 	solar_uuid := uuid.NewV3(NAMESPACE_UUID, "solar").String()
 	wind_uuid := uuid.NewV3(NAMESPACE_UUID, "wind").String()
