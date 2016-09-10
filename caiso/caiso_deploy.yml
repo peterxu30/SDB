@@ -1,0 +1,6 @@
+entity: /Users/Peter/go/src/github.com/peterxu30/sdb/caiso/caiso_driver.ent
+build: [go get github.com/peterxu30/sdb/tree/master/caiso, go build]
+run: [./caiso]
+memAlloc: 256M
+cpuShares: 14
+
