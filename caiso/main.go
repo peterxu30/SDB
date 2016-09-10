@@ -26,7 +26,6 @@ func (msg TimeseriesReading) ToMsgPackBW() (po bw2.PayloadObject) {
 	return
 }
 
-//needs lots of work
 func main() {
 	bw := bw2.ConnectOrExit("")
 
