@@ -1,5 +1,11 @@
 entity: /Users/Peter/go/src/github.com/peterxu30/sdb/caiso/caiso_driver.ent
-build: [go get github.com/peterxu30/sdb/tree/master/caiso, go build]
+container: jhkolb/spawnpoint:amd64
+build: [go get github.com/peterxu30/sdb/caiso,
+		go get github.com/immesys/spawnpoint/spawnable,
+		go get github.com/satori/go.uuid,
+		go get gopkg.in/immesys/bw2bind.v5,
+		go get github.com/PuerkitoBio/goquery,
+		go build]
 run: [./caiso]
 memAlloc: 256M
 cpuShares: 14
